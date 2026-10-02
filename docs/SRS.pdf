@@ -1,25 +1,74 @@
 %PDF-1.4
-1 0 obj <</Type /Catalog /Pages 2 0 R>> endobj
-2 0 obj <</Type /Pages /Kids [3 0 R] /Count 1>> endobj
-3 0 obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources <</Font <</F1 4 0 R>>>> /Contents 5 0 R>> endobj
-4 0 obj <</Type /Font /Subtype /Type1 /BaseFont /Helvetica>> endobj
-5 0 obj <</Length 531>> stream
-BT /F1 18 Tf 50 750 Td (Project Helix - Software Requirements Specification (SRS)) Tj ET
-BT /F1 11 Tf 50 720 Td (1. Executive Summary & Product Scope) Tj ET
-BT /F1 11 Tf 50 702 Td (2. Functional Requirements: Auth, Startup, Team, Hiring, Tasks, Funding, Docs, Meetings, Expenses, Notifications, Reports) Tj ET
-BT /F1 11 Tf 50 684 Td (3. Technology Stack: HTML, CSS, JavaScript, Python Flask, Oracle 10g XE) Tj ET
-BT /F1 11 Tf 50 666 Td (4. Non-Functional Requirements: Data Integrity, 3NF Normalization, Indexing & Security) Tj ET
-endstream
+%“Œ‹ž ReportLab Generated PDF document (opensource)
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/Contents 8 0 R /MediaBox [ 0 0 612 792 ] /Parent 7 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+5 0 obj
+<<
+/PageMode /UseNone /Pages 7 0 R /Type /Catalog
+>>
+endobj
+6 0 obj
+<<
+/Author (\(anonymous\)) /CreationDate (D:20261002230139+05'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20261002230139+05'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (\(unspecified\)) /Title (\(anonymous\)) /Trapped /False
+>>
+endobj
+7 0 obj
+<<
+/Count 1 /Kids [ 4 0 R ] /Type /Pages
+>>
+endobj
+8 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 1307
+>>
+stream
+Gat=jh/D:B'ZJu*/'cV$<5cTW_T*T@UeMaMMp5:fOB09o@V2lXS=+B&<;kjX0ct8,PU*p:iQAn6q4)NpfLHs)puRcR^`^M5N=S6=["R?/RY^AdN%0l'Is5P;K?L^8\aik%QSk=5"qgc#Vr/1bL5VN$I`Ji&!nZMGmaW84Sl'p_l3D<UrYq]n-g!_A7];XHR;'O&*XeYj,A@V(S@DZ.cE'k5%+,SR^S"p,Qrh1>3'Z.6LJd/Kjm+G><j8EJ$0Tt=P,KY-42Ur?TGlN.->@g<j&1a)L+:%T'5RMKQstn6[??nYK@[j4YJO&D0gES5kf:PX(hQZ.OZ('oNl![-%dnJIhL5R;=X&&"aN^'m^5$Z;/7f*tapDE/=ZCiK':E>9Xio9c>hhuVea/QH)3ZTp"1oarQ/sGtK!A#(,0(?g>A->QQGb^E,quKe1$F3>9up:=Uh"e=):El[lDSO`!`27olSPG+(oth"e.<58cqdTZGD/,d^m)>]K\\i$K>^<VA?:r)C5A6[+'p^1I%@:5L7:NL67/)"6H5mW>P[?Od'sj[\5diR"-`8Xm^hGMie4]/Nb[<`]jYh033%5p0K,cF>K<dqk9.>4;O1e!eI;%a(IMnj'kE>c6#3*ls0;AoQ[KCNE&\;RkSJD2dYb`h3A]f#knkp_<^J,jBU.$AJf0H^3%&cPR:c2<lJBGc4G6R])U0>?*kq#NV-emBaLEp)Dno:`b[G;:rf]NUR4[9hlSLe$fC0=\qkNVTiFl&&2PP"R\eN06^^`q)bcIk(H=LVD.P4ou3)JB04AaMEh..)j%eK;130S`B>T#&&@`h7-IjaAGd^6TX-Y[jNQqm((=-8\X5E3`_-D_YCa'nb#>c;'gj(fg%iu$#SidBu6lA*-04oD#G)@K8U*NNfZ@s,UnRVKpO:qE0p)I.k,8KWjaj+K\,4l"9$f=0dI^J?5`n[7tG.)#sY$SpWk(RCoEj]97)YU`hQ'=)#6.\qIt.6&Ki*=oX>Do48tP[i%MVH?rX%r6P'[1kYhY1:tRH(;c:+hZVoa(RGUWO^`redB,<]8`uj8['/p9O#>%cJBY<])Tc6DX</E1WO@M__ndE/Nhf\98Rg??Z;j;gI=N`USi")Fb2Pn^YQnoQDE=dAgt[W`?^dBF(^\E==R#hO]^(EQ^Xt(Gh'PMQE#YV#ijV:4`p4cF,f;gcBXXG.UtesYDB@kPh_8F@D6pJBs*D6IjiC&,g5fa99Bqb4fmRp*E6JWc6H'E:'pd](6=Vr0>A4F.]D-[9`.?#MU[N)b8)PcDK7g.:3rm]`[%J6LoC4R-g(a0~>endstream
 endobj
 xref
-0 6
+0 9
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000244 00000 n 
-0000000323 00000 n 
-trailer <</Size 6 /Root 1 0 R>>
+0000000061 00000 n 
+0000000102 00000 n 
+0000000209 00000 n 
+0000000321 00000 n 
+0000000514 00000 n 
+0000000582 00000 n 
+0000000862 00000 n 
+0000000921 00000 n 
+trailer
+<<
+/ID 
+[<3db1446bbcf03729098b9e4fd5b3fc4c><3db1446bbcf03729098b9e4fd5b3fc4c>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 6 0 R
+/Root 5 0 R
+/Size 9
+>>
 startxref
-400
+2319
 %%EOF
