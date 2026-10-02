@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2>Create New Project</h2>
+    <form method="POST" action="{{ url_for('tasks.project_create') }}">
+        <div class="form-group">
+            <label>Startup</label>
+            <select name="startup_id" class="form-control" required>
+                {% for s in startups %}
+                <option value="{{ s.startup_id }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Project Name</label>
+            <input type="text" name="name" class="form-control" required placeholder="MVP Release V1">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="4"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Project</button>
+    </form>
+</div>
+{% endblock %}

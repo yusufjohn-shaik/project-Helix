@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 4rem auto;" class="card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 1.5rem; box-shadow: var(--shadow-glow);">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 style="font-size: 1.6rem; color: var(--text-main);">Sign In to Helix OS</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Enter your credentials to access your operating system</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('auth.login') }}" data-validate="true">
+        <div class="form-group">
+            <label><i class="fa-solid fa-user" style="margin-right: 0.35rem;"></i> Username or Email</label>
+            <div class="input-icon-wrapper">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="text" name="username" class="form-control" required placeholder="user@helix.io">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fa-solid fa-key" style="margin-right: 0.35rem;"></i> Password</label>
+            <div class="input-icon-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="password" class="form-control" required placeholder="••••••••">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; font-size: 1rem; margin-top: 0.5rem;">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+    </form>
+
+    <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+        Don't have an account? <a href="{{ url_for('auth.register') }}" style="font-weight: 600; color: var(--accent);">Create Account &rarr;</a>
+    </div>
+</div>
+{% endblock %}

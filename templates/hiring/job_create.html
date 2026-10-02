@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 650px; margin: 2rem auto; border: 1px solid var(--border-color);">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-briefcase" style="color: var(--warning);"></i> 
+            {% if is_edit %}Edit Job Vacancy{% else %}Post New Job Vacancy{% endif %}
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+            {% if is_edit %}Updates record in JOBS table (ID #{{ job.job_id }}){% else %}Inserts a new record into JOBS (Strong Entity){% endif %}
+        </p>
+    </div>
+
+    <form method="POST" action="{% if is_edit %}{{ url_for('hiring.job_edit', job_id=job.job_id) }}{% else %}{{ url_for('hiring.job_create') }}{% endif %}">
+        {% if not is_edit %}
+        <div class="form-group">
+            <label>Hiring Startup *</label>
+            <select name="startup_id" class="form-control" required>
+                <option value="">-- Choose Startup --</option>
+                {% for s in startups %}
+                <option value="{{ s.startup_id }}" {% if request.args.get('startup_id')|int == s.startup_id %}selected{% endif %}>
+                    {{ s.name }} ({{ s.industry }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label>Job Title *</label>
+            <input type="text" name="title" class="form-control" required placeholder="e.g. Backend Developer, UI/UX Designer, IoT Engineer" value="{{ job.title if job else '' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Job Status</label>
+            <select name="status" class="form-control">
+                <option value="open" {% if job and job.status == 'open' %}selected{% endif %}>Open</option>
+                <option value="closed" {% if job and job.status == 'closed' %}selected{% endif %}>Closed</option>
+                <option value="filled" {% if job and job.status == 'filled' %}selected{% endif %}>Filled</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Role Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Responsibilities, required skills, tools...">{{ job.description if job else '' }}</textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+            <a href="{{ url_for('hiring.jobs_list') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> {% if is_edit %}Save Changes{% else %}Publish Vacancy{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

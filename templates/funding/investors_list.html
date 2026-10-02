@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Investor Directory</h1>
+    <a href="{{ url_for('funding.investor_create') }}" class="btn btn-primary">+ Add Investor</a>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Firm</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inv in investors %}
+            <tr>
+                <td>#{{ inv.investor_id }}</td>
+                <td><strong>{{ inv.name }}</strong></td>
+                <td>{{ inv.firm_name or 'Independent' }}</td>
+                <td>{{ inv.email }}</td>
+                <td>{{ inv.phone or 'N/A' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No investors registered yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

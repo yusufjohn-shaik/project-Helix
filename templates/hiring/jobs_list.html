@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-briefcase" style="color: var(--warning);"></i> Startup Careers & Open Positions</h1>
+        <p class="page-subtitle">Talent recruitment opportunities across ecosystem portfolio companies (JOBS Table).</p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('hiring.job_create') }}" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Post Job Vacancy
+        </a>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+    {% for j in jobs %}
+    <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">{{ j.title }}</h3>
+                <span class="badge {% if j.status == 'open' %}badge-active{% elif j.status == 'filled' %}badge-pending{% else %}badge-closed{% endif %}">
+                    {{ j.status }}
+                </span>
+            </div>
+            <p style="color: var(--primary); font-weight: 600; margin: 0 0 0.75rem 0; font-size: 0.95rem;">
+                <i class="fa-solid fa-building"></i> {{ j.startup_name }}
+                {% if j.startup_industry %}
+                <span style="color: var(--text-muted); font-weight: 400;">({{ j.startup_industry }})</span>
+                {% endif %}
+            </p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.25rem;">
+                {{ j.description or 'No role description provided.' }}
+            </p>
+        </div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <small style="color: var(--text-muted);">
+                Posted: {{ j.posted_date.strftime('%Y-%m-%d') if j.posted_date and j.posted_date.strftime else (j.posted_date or 'Recent') }}
+            </small>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('hiring.job_detail', job_id=j.job_id) }}" class="btn btn-secondary btn-sm">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+        <i class="fa-solid fa-briefcase" style="font-size: 2.5rem; opacity: 0.4; margin-bottom: 1rem; display: block;"></i>
+        No job postings active currently. Click <strong>Post Job Vacancy</strong> to add one.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

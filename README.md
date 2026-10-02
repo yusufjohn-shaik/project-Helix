@@ -1,47 +1,161 @@
-# Project-Helix 🚀 (DBMS Course Project)
+# Project-Helix 🚀 (Startup Operating System)
 
-Project-Helix is a web application created as a student Database Management Systems (DBMS) project. It manages startup ecosystems, hiring, funding rounds, tasks, documents, meetings, and expenses using an Oracle Database.
+**Academic DBMS Course Project**  
+*Aditya University — B.Tech Computer Science Engineering*  
+*Project ID:* `25B11CS893` | *Architecture:* 9 Tables (3NF)
 
-## Technology Stack
+Project-Helix is a full-stack, database-driven web application for managing the startup lifecycle end to end. Built with a normalized 9-table relational database on PostgreSQL, it manages founder registrations, startup entities, team allocations, job openings, projects, sprint tasks, venture capital funding rounds, accredited investors, and investment commitments.
 
-- **Frontend:** HTML, CSS, JavaScript (Jinja2 Templates)
-- **Backend:** Python Flask
-- **Database:** Oracle Database (Oracle 10g XE / 19c) connected via `oracledb`
+---
 
-## Project Structure
+## 1. Database Architecture (9 Tables in 3NF)
 
-- `database/`: Connecting to Oracle DB and running SQL queries
-- `models/`: Simple Python classes for holding database table data
-- `services/`: Helper functions to run SQL queries for each feature
-- `routes/`: Flask page routes for handling forms and pages
-- `templates/`: HTML templates for UI
-- `static/`: CSS styles and JS scripts
-- `sql/`: DDL schemas, PL/SQL stored procedures, triggers, views, and sample data
-- `docs/`: Project report, ER Diagram, and SRS documentation
+As specified in `Project_Helix_DBMS_25B11CS893.pptx`:
 
-## How to Run
+```
++----------------+          1:N          +-----------------+
+|     USERS      |---------------------->|    STARTUPS     |
++----------------+                       +-----------------+
+| user_id (PK)   |                          | startup_id (PK) |
+| name           |                          | name            |
+| username (UK)  |                          | industry        |
+| email (UK)     |                          | description     |
+| password_hash  |                          | founded_date    |
+| role           |                          | status          |
+| created_at     |                          | created_by (FK) |
++----------------+                          +-----------------+
+  |      |                                    |     |     |
+  | 1:N  | 1:N                           1:N  |     | 1:N | 1:N
+  v      v                               v    v     v     v
++--------------+ +-----------+ +-----------+ +----------+ +----------------+
+| TEAM_MEMBERS | |   TASKS   | |   JOBS    | | PROJECTS | | FUNDING_ROUNDS |
++--------------+ +-----------+ +-----------+ +----------+ +----------------+
+|team_id (PK)  | |task_id(PK)| |job_id(PK) | |proj_id(PK)| |round_id (PK)  |
+|startup_id(FK)| |proj_id(FK)| |startup(FK)| |startup(FK)| |startup_id (FK)|
+|user_id (FK)  | |assigned_to| |title      | |name      | |round_type      |
+|role_in_team  | |priority   | |status     | |status    | |target_amount   |
+|joined_date   | |status     | |posted_date| |start_date| |status          |
++--------------+ +-----------+ +-----------+ +----------+ +----------------+
+                                                                |
+                                                           1:N  v
+                                                         +---------------+
+                                                         |  INVESTMENTS  |
+                                                         +---------------+
+                                                         |investment_idPK|
+                                                         |round_id (FK)  |
+                                                         |investor_id(FK)|
+                                                         |amount         |
+                                                         |investment_date|
+                                                         +---------------+
+                                                                ^
+                                                           1:N  |
+                                                         +---------------+
+                                                         |   INVESTORS   |
+                                                         +---------------+
+                                                         |investor_id(PK)|
+                                                         |name           |
+                                                         |email (UK)     |
+                                                         |phone          |
+                                                         |firm_name      |
+                                                         +---------------+
+```
 
-1. **Environment Setup:**
-   Create `.env` file with your Oracle DB credentials:
-   ```env
-   DB_USER=helix_admin
-   DB_PASSWORD=your_password
-   DB_DSN=localhost:1521/XE
-   SECRET_KEY=supersecretkey
-   ```
+### Table Classifications (Slide 8 & 21)
+- **7 Strong Entities:** `USERS`, `STARTUPS`, `JOBS`, `PROJECTS`, `TASKS`, `FUNDING_ROUNDS`, `INVESTORS`
+- **2 Associative Entities:**
+  - `TEAM_MEMBERS`: Resolves Many-to-Many relationship `USERS ↔ STARTUPS`
+  - `INVESTMENTS`: Resolves Many-to-Many relationship `INVESTORS ↔ FUNDING_ROUNDS`
+- **Total Entities:** 9 | **Total Attributes:** 52
 
-2. **Database Setup:**
-   Run the scripts in `sql/` folder in Oracle SQL Developer or SQL*Plus:
-   - `schema.sql` (Creates tables)
-   - `views.sql` (Creates database views)
-   - `procedures.sql` (Creates PL/SQL procedures)
-   - `triggers.sql` (Creates PL/SQL triggers)
-   - `indexes.sql` (Creates indexes)
-   - `sample_data.sql` (Inserts sample data)
+---
 
-3. **Install Requirements & Run:**
-   ```bash
-   pip install -r requirements.txt
-   python app.py
-   ```
+## 2. Technology Stack
 
+- **Frontend:** HTML5, CSS3, JavaScript, Jinja2 Templates
+- **Backend:** Python 3, Flask (Application Factory & Blueprints)
+- **Database:** Oracle Database (10g XE / 11g / 19c / 21c) connected via `python-oracledb`
+- **Security:** Werkzeug password hashing, parameterized SQL queries
+
+---
+
+## 3. Project Directory Structure
+
+```
+Project-Helix/
+├── app.py                      # Flask Application Factory & Blueprints Registration
+├── config.py                   # Environment & Database Configurations
+├── database/                   # Connection Pool & Query Execution Helpers
+│   ├── connection.py           # Oracle Connection Pool with Thick/Thin Mode
+│   ├── queries.py              # Parameterized run_query() & run_transaction()
+│   ├── helpers.py              # Cursor dictionary mapping helpers
+│   └── init_db.py              # Automated SQL DDL runner
+├── models/                     # Python Data Models
+│   ├── user.py                 # User Model
+│   ├── startup.py              # Startup & TeamMember Models
+│   ├── job.py                  # Job Model
+│   ├── tasks.py                # Project & Task Models
+│   └── funding.py              # Investor, FundingRound, Investment Models
+├── services/                   # Business Logic & SQL Execution Layer
+│   ├── authentication_service.py
+│   ├── startup_service.py
+│   ├── job_service.py
+│   ├── task_service.py
+│   ├── funding_service.py
+│   └── report_service.py
+├── routes/                     # Flask Blueprint Controllers
+│   ├── auth.py                 # /auth
+│   ├── startup.py              # /startups
+│   ├── team.py                 # /team
+│   ├── hiring.py               # /hiring
+│   ├── tasks.py                # /tasks
+│   ├── funding.py              # /funding
+│   └── reports.py              # /reports
+├── templates/                  # Jinja2 HTML Templates
+├── static/                     # CSS stylesheets & client JavaScript
+├── sql/                        # PostgreSQL SQL DDL Scripts
+│   ├── schema.sql              # 9-Table 3NF DDL & SERIAL Primary Keys
+│   ├── triggers.sql            # PL/pgSQL Business Integrity Triggers
+│   ├── views.sql               # Database Views (vw_startup_summary, etc.)
+│   ├── procedures.sql          # PL/pgSQL Stored Procedures
+│   ├── indexes.sql             # Performance B-Tree Indexes
+│   └── sample_data.sql         # 10 Sample Rows Per Table (from PPT)
+└── docs/                       # Academic Specifications & Diagrams
+    ├── ER_Diagram.md           # ER Diagram & Participation Constraints
+    ├── SRS.md                  # Software Requirements Specification
+    └── VIVA_EXPLANATION_GUIDE.md # Comprehensive DBMS Viva & Defense Guide
+```
+
+---
+
+## 4. Setup & Running Instructions
+
+### 1. Database Configuration
+Create or configure `.env` in the root directory:
+```env
+DB_USER=helix_user
+DB_PASSWORD=helix123
+DB_NAME=helix
+DB_HOST=localhost
+DB_PORT=5432
+SECRET_KEY=helix-secret-key-123
+```
+
+### 2. Database Initialization
+Run the automated DDL runner against PostgreSQL:
+```bash
+python database/init_db.py
+```
+This executes sequentially:
+1. `sql/schema.sql` (Creates 9 tables in 3NF)
+2. `sql/sample_data.sql` (Inserts 10 seed rows per table & sets sequences)
+3. `sql/triggers.sql` (PL/pgSQL triggers)
+4. `sql/procedures.sql` (Stored procedures)
+5. `sql/views.sql` (4 analytical views)
+6. `sql/indexes.sql` (14 B-Tree indexes)
+
+### 3. Run Web Application
+```bash
+pip install -r requirements.txt
+python app.py
+```
+Access the application dashboard at: `http://localhost:5000`

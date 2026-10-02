@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Project Workspace</h1>
+    <div>
+        <a href="{{ url_for('tasks.task_create') }}" class="btn btn-secondary">+ Create Task</a>
+        <a href="{{ url_for('tasks.project_create') }}" class="btn btn-primary">+ Create Project</a>
+    </div>
+</div>
+
+<div class="grid">
+    {% for p in projects %}
+    <div class="card">
+        <h3>{{ p.name }}</h3>
+        <p style="color: var(--accent); font-size: 0.9rem;">{{ p.startup_name or 'Startup Project' }}</p>
+        <p>{{ p.description or 'No description available.' }}</p>
+        <br>
+        <a href="{{ url_for('tasks.project_detail', project_id=p.project_id) }}" class="btn btn-secondary">View Tasks &rarr;</a>
+    </div>
+    {% else %}
+    <div class="card"><p>No projects found.</p></div>
+    {% endfor %}
+</div>
+{% endblock %}

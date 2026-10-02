@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title" style="margin-bottom: 0.25rem;">
+            {{ round.startup_name }} — {{ round.round_type }} Round
+        </h1>
+        <p class="page-subtitle" style="margin: 0;">
+            Target: <strong>${{ "{:,.0f}".format(round.target_amount) }}</strong>
+            &nbsp;•&nbsp;
+            Raised: <strong style="color: #34d399;">${{ "{:,.0f}".format(round.total_raised or 0) }}</strong>
+            &nbsp;•&nbsp;
+            <span class="badge {% if round.status == 'funded' %}badge-active{% elif round.status == 'open' %}badge-pending{% else %}badge-closed{% endif %}">{{ round.status }}</span>
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        {% if round.status == 'open' %}
+        <form method="POST" action="{{ url_for('funding.round_close', round_id=round.round_id) }}" style="display: inline;">
+            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-lock"></i> Close Round</button>
+        </form>
+        {% endif %}
+        <a href="{{ url_for('funding.rounds_list') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> All Rounds
+        </a>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Record Investment Form -->
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-main);">
+            <i class="fa-solid fa-file-invoice-dollar" style="color: var(--success);"></i> Record Investment Ticket
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+            Inserts a new transactional row into <strong>INVESTMENTS</strong> (Associative Table: INVESTORS ↔ FUNDING_ROUNDS).
+        </p>
+        
+        <form method="POST" action="{{ url_for('funding.add_investment', round_id=round.round_id) }}">
+            <div class="form-group">
+                <label>Participating Investor *</label>
+                <select name="investor_id" class="form-control" required>
+                    <option value="">-- Select Investor --</option>
+                    {% for inv in investors %}
+                    <option value="{{ inv.investor_id }}">{{ inv.name }} ({{ inv.firm_name }}) — #{{ inv.investor_id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Capital Commitment Amount ($) *</label>
+                <input type="number" step="1000" name="amount" class="form-control" required placeholder="e.g. 250000">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="submit" class="btn btn-primary" {% if round.status == 'closed' %}disabled{% endif %}>
+                    <i class="fa-solid fa-check"></i> Commit Investment
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Investments History Table -->
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-main);">
+            <i class="fa-solid fa-vault" style="color: var(--primary);"></i> Investment Allocation Tickets ({{ investments|length }})
+        </h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Investor</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inv in investments %}
+                    <tr>
+                        <td><span style="color: var(--text-muted); font-weight: 600;">#{{ inv.investment_id }}</span></td>
+                        <td>
+                            <strong>{{ inv.investor_name }}</strong><br>
+                            <small style="color: var(--text-muted);">{{ inv.firm_name }}</small>
+                        </td>
+                        <td><strong style="color: #34d399;">${{ "{:,.2f}".format(inv.amount) }}</strong></td>
+                        <td><small style="color: var(--text-muted);">{{ inv.investment_date.strftime('%Y-%m-%d') if inv.investment_date and inv.investment_date.strftime else (inv.investment_date or 'Recent') }}</small></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center" style="padding: 2.5rem; color: var(--text-muted);">No investment tickets allocated yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

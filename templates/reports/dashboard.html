@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> DBMS Analytics & Reporting Hub</h1>
+        <p class="page-subtitle">Real-time aggregations computed directly via Oracle Database Views (vw_startup_summary, vw_funding_details, vw_task_overview, vw_jobs_overview).</p>
+    </div>
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="{{ url_for('reports.revenue') }}" class="btn btn-secondary btn-sm">Startups View</a>
+        <a href="{{ url_for('reports.funding') }}" class="btn btn-secondary btn-sm">Funding View</a>
+        <a href="{{ url_for('reports.tasks') }}" class="btn btn-secondary btn-sm">Tasks View</a>
+        <a href="{{ url_for('reports.hiring') }}" class="btn btn-secondary btn-sm">Jobs View</a>
+    </div>
+</div>
+
+<!-- View 1: Startup Summary View (vw_startup_summary) -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">
+            <i class="fa-solid fa-rocket" style="color: var(--primary);"></i> 1. Startup Portfolio Summary (<code>vw_startup_summary</code>)
+        </h3>
+        <span class="badge badge-active">Oracle View</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Startup</th>
+                    <th>Industry</th>
+                    <th>Founder</th>
+                    <th>Team Size</th>
+                    <th>Projects</th>
+                    <th>Pending Tasks</th>
+                    <th>Total Funding Raised</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in startups %}
+                <tr>
+                    <td><strong>{{ s.startup_name }}</strong></td>
+                    <td>{{ s.industry }}</td>
+                    <td>{{ s.founder_name }}</td>
+                    <td><span class="badge badge-pending">{{ s.team_size }}</span></td>
+                    <td>{{ s.total_projects }}</td>
+                    <td>{{ s.pending_tasks }}</td>
+                    <td><strong style="color: #34d399;">${{ "{:,.2f}".format(s.total_funding_raised) }}</strong></td>
+                    <td><span class="badge badge-active">{{ s.startup_status }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="text-center">No startup records available in view.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- View 2: Funding Rounds Analytics (vw_funding_details) -->
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">
+            <i class="fa-solid fa-hand-holding-dollar" style="color: var(--success);"></i> 2. Funding Rounds & Capital Deployment (<code>vw_funding_details</code>)
+        </h3>
+        <span class="badge badge-active">Oracle View</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Round ID</th>
+                    <th>Startup</th>
+                    <th>Round Type</th>
+                    <th>Target Amount</th>
+                    <th>Total Invested</th>
+                    <th>Investors</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in funding %}
+                <tr>
+                    <td>#{{ f.round_id }}</td>
+                    <td><strong>{{ f.startup_name }}</strong></td>
+                    <td><span class="badge badge-pending">{{ f.round_type }}</span></td>
+                    <td>${{ "{:,.0f}".format(f.target_amount) }}</td>
+                    <td><strong style="color: #34d399;">${{ "{:,.0f}".format(f.total_invested) }}</strong></td>
+                    <td>{{ f.investor_count }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="flex: 1; background: var(--bg-main); height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div style="width: {{ [f.funding_percentage|float, 100]|min }}%; background: #10b981; height: 100%;"></div>
+                            </div>
+                            <small>{{ f.funding_percentage }}%</small>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-active">{{ f.round_status }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="text-center">No funding round records available in view.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Grid for View 3 & 4 -->
+<div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <!-- View 3: Task & Project Status (vw_task_overview) -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">
+                <i class="fa-solid fa-list-check" style="color: var(--warning);"></i> 3. Tasks Overview (<code>vw_task_overview</code>)
+            </h3>
+            <span class="badge badge-active">Oracle View</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Project</th>
+                        <th>Assignee</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tasks[:7] %}
+                    <tr>
+                        <td><strong>{{ t.task_title }}</strong></td>
+                        <td><small>{{ t.project_name }} ({{ t.startup_name }})</small></td>
+                        <td>{{ t.assignee_name or 'Unassigned' }}</td>
+                        <td><span class="badge badge-pending">{{ t.task_status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center">No tasks available in view.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- View 4: Jobs Overview (vw_jobs_overview) -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-main);">
+                <i class="fa-solid fa-briefcase" style="color: var(--info);"></i> 4. Jobs & Recruitment (<code>vw_jobs_overview</code>)
+            </h3>
+            <span class="badge badge-active">Oracle View</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Startup</th>
+                        <th>Industry</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in jobs[:7] %}
+                    <tr>
+                        <td><strong>{{ j.job_title }}</strong></td>
+                        <td>{{ j.startup_name }}</td>
+                        <td>{{ j.startup_industry }}</td>
+                        <td><span class="badge badge-active">{{ j.job_status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center">No jobs available in view.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

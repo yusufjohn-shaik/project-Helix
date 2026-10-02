@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Tasks Backlog</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">All active, ongoing, and completed tasks across startup projects.</p>
+    </div>
+    <div>
+        <a href="{{ url_for('tasks.projects_list') }}" class="btn btn-secondary">View Projects</a>
+        <a href="{{ url_for('tasks.task_create') }}" class="btn btn-primary">+ Create Task</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Task Title</th>
+                <th>Project</th>
+                <th>Startup</th>
+                <th>Assignee</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tasks %}
+            <tr>
+                <td>#{{ t.task_id }}</td>
+                <td>
+                    <strong>{{ t.title }}</strong>
+                    {% if t.description %}
+                    <br><small style="color: var(--text-muted);">{{ t.description[:60] }}{% if t.description|length > 60 %}...{% endif %}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('tasks.project_detail', project_id=t.project_id) }}" style="color: var(--accent); font-weight: 500;">
+                        {{ t.project_name }}
+                    </a>
+                </td>
+                <td>{{ t.startup_name }}</td>
+                <td>
+                    {% if t.assignee_name %}
+                        <span style="font-weight: 500;">{{ t.assignee_name }}</span>
+                    {% else %}
+                        <span style="color: var(--text-muted); font-style: italic;">Unassigned</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if t.priority == 'high' %}
+                        <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">High</span>
+                    {% elif t.priority == 'medium' %}
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Medium</span>
+                    {% else %}
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">Low</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if t.status in ['done', 'completed'] %}
+                        <span class="badge badge-active">Done</span>
+                    {% elif t.status in ['in_progress', 'ongoing'] %}
+                        <span class="badge" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">In Progress</span>
+                    {% else %}
+                        <span class="badge badge-pending">{{ t.status }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <a href="{{ url_for('tasks.task_edit', task_id=t.task_id) }}" class="btn btn-secondary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">Edit</a>
+                        {% if t.status not in ['done', 'completed'] %}
+                        <form method="POST" action="{{ url_for('tasks.task_update_status', task_id=t.task_id) }}" style="display: inline;">
+                            <input type="hidden" name="status" value="completed">
+                            <button type="submit" class="btn btn-primary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;">Complete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    No tasks found. Create a project and task to get started!
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

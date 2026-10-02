@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Funding Rounds</h1>
+    <div>
+        <a href="{{ url_for('funding.investors_list') }}" class="btn btn-secondary">Investor Directory</a>
+        <a href="{{ url_for('funding.round_create') }}" class="btn btn-primary">+ Create Funding Round</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Round ID</th>
+                <th>Startup</th>
+                <th>Round Type</th>
+                <th>Target Amount ($)</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rounds %}
+            <tr>
+                <td>#{{ r.round_id }}</td>
+                <td><strong>{{ r.startup_name }}</strong></td>
+                <td>{{ r.round_type }}</td>
+                <td>${{ "{:,.2f}".format(r.target_amount) if r.target_amount else '0' }}</td>
+                <td><span class="badge badge-active">{{ r.status }}</span></td>
+                <td>
+                    <a href="{{ url_for('funding.round_detail', round_id=r.round_id) }}" class="btn btn-secondary" style="padding: 0.2rem 0.6rem;">Investments</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">No active funding rounds found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 650px; margin: 2rem auto; border: 1px solid var(--border-color);">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-pen" style="color: var(--primary);"></i> Edit Startup: {{ startup.name }}
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+            Update record in STARTUPS table (ID: #{{ startup.startup_id }}).
+        </p>
+    </div>
+
+    <form method="POST" action="{{ url_for('startup.edit', startup_id=startup.startup_id) }}">
+        <div class="form-group">
+            <label>Startup Name *</label>
+            <input type="text" name="name" class="form-control" required value="{{ startup.name }}">
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label>Industry *</label>
+                <input type="text" name="industry" class="form-control" required value="{{ startup.industry }}">
+            </div>
+
+            <div class="form-group">
+                <label>Operational Status</label>
+                <select name="status" class="form-control">
+                    <option value="active" {% if startup.status == 'active' %}selected{% endif %}>Active</option>
+                    <option value="planning" {% if startup.status == 'planning' %}selected{% endif %}>Planning</option>
+                    <option value="closed" {% if startup.status == 'closed' %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" class="form-control" rows="3">{{ startup.description }}</textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+            <a href="{{ url_for('startup.detail', startup_id=startup.startup_id) }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

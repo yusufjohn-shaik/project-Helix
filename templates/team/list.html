@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        {% if is_all %}
+        <h1 class="page-title"><i class="fa-solid fa-users" style="color: var(--accent);"></i> All Team Allocations</h1>
+        <p class="page-subtitle">Cross-startup membership mapping resolving Many-to-Many relationships via TEAM_MEMBERS.</p>
+        {% else %}
+        <h1 class="page-title"><i class="fa-solid fa-users" style="color: var(--accent);"></i> Team Roster: {{ startup.name }}</h1>
+        <p class="page-subtitle">Active member allocations for {{ startup.name }} (Startup #{{ startup.startup_id }}).</p>
+        {% endif %}
+    </div>
+    {% if not is_all and startup %}
+    <a href="{{ url_for('team.add_member', startup_id=startup.startup_id) }}" class="btn btn-primary">
+        <i class="fa-solid fa-user-plus"></i> Add Team Member
+    </a>
+    {% endif %}
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Allocation ID</th>
+                {% if is_all %}
+                <th>Startup</th>
+                {% endif %}
+                <th>Member Name</th>
+                <th>Email</th>
+                <th>Role in Team</th>
+                <th>Joined Date</th>
+                {% if not is_all %}
+                <th>Action</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in team %}
+            <tr>
+                <td><span style="color: var(--text-muted); font-weight: 600;">#{{ member.team_id }}</span></td>
+                {% if is_all %}
+                <td>
+                    <strong><a href="{{ url_for('startup.detail', startup_id=member.startup_id) }}">{{ member.startup_name }}</a></strong>
+                </td>
+                {% endif %}
+                <td><strong>{{ member.user_name or member.username }}</strong></td>
+                <td>{{ member.email }}</td>
+                <td><span class="badge badge-active">{{ member.role_in_team }}</span></td>
+                <td><small style="color: var(--text-muted);">{{ member.joined_date.strftime('%Y-%m-%d') if member.joined_date and member.joined_date.strftime else (member.joined_date or 'N/A') }}</small></td>
+                {% if not is_all %}
+                <td>
+                    <form method="POST" action="{{ url_for('team.remove_member', team_id=member.team_id, startup_id=startup.startup_id) }}" onsubmit="return confirm('Remove team member?');">
+                        <button type="submit" class="btn btn-danger btn-sm" style="padding: 0.25rem 0.5rem;"><i class="fa-solid fa-xmark"></i> Remove</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+            {% else %}
+            <tr><td colspan="{% if is_all %}6{% else %}6{% endif %}" class="text-center" style="padding: 2.5rem; color: var(--text-muted);">No team members found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

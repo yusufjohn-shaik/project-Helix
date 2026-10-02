@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-rocket" style="color: var(--primary);"></i> Registered Startups</h1>
+        <p class="page-subtitle">Manage portfolio ventures, industry sectors, team size, and founding operations.</p>
+    </div>
+    <a href="{{ url_for('startup.create_startup') }}" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Register Startup
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Startup Name</th>
+                <th>Industry</th>
+                <th>Founder</th>
+                <th>Team</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in startups %}
+            <tr>
+                <td><span style="color: var(--text-muted); font-weight: 600;">#{{ s.startup_id }}</span></td>
+                <td>
+                    <strong style="color: var(--text-main); font-size: 0.98rem;">
+                        <a href="{{ url_for('startup.detail', startup_id=s.startup_id) }}">{{ s.name }}</a>
+                    </strong>
+                    {% if s.description %}
+                    <br><small style="color: var(--text-muted);">{{ s.description[:50] }}{% if s.description|length > 50 %}...{% endif %}</small>
+                    {% endif %}
+                </td>
+                <td><span class="badge" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">{{ s.industry }}</span></td>
+                <td>{{ s.founder_name or s.founder_username }}</td>
+                <td><span class="badge badge-pending">{{ s.team_size }} members</span></td>
+                <td>
+                    <span class="badge {% if s.status == 'active' %}badge-active{% elif s.status == 'planning' %}badge-pending{% else %}badge-closed{% endif %}">
+                        {{ s.status }}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.35rem;">
+                        <a href="{{ url_for('startup.detail', startup_id=s.startup_id) }}" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
+                        <a href="{{ url_for('startup.edit', startup_id=s.startup_id) }}" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                    No startups registered in the system yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

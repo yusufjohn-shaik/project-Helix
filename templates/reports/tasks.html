@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Task Allocation Report</h1>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Task ID</th>
+                <th>Startup</th>
+                <th>Project</th>
+                <th>Task Title</th>
+                <th>Assignee</th>
+                <th>Priority</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in task_data %}
+            <tr>
+                <td>#{{ t.task_id }}</td>
+                <td>{{ t.startup_name }}</td>
+                <td>{{ t.project_name }}</td>
+                <td><strong>{{ t.task_title }}</strong></td>
+                <td>{{ t.assignee_name or 'Unassigned' }}</td>
+                <td><span class="badge badge-pending">{{ t.priority }}</span></td>
+                <td><span class="badge badge-active">{{ t.task_status }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No task report records found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="max-width: 550px; margin: 2rem auto; border: 1px solid var(--border-color);">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="margin: 0; font-size: 1.35rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-user-plus" style="color: var(--accent);"></i> Add Team Member
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+            Assign a user to <strong>{{ startup.name }}</strong> (Inserts into TEAM_MEMBERS associative table).
+        </p>
+    </div>
+
+    <form method="POST" action="{{ url_for('team.add_member', startup_id=startup.startup_id) }}">
+        <div class="form-group">
+            <label>Select User *</label>
+            <select name="user_id" class="form-control" required>
+                <option value="">-- Choose User --</option>
+                {% for u in users %}
+                <option value="{{ u.user_id }}">{{ u.name or u.username }} ({{ u.email }}) — #{{ u.user_id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Role in Team *</label>
+            <input type="text" name="role_in_team" class="form-control" required placeholder="e.g. Co-founder, Lead Architect, Developer, Designer, Advisor">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+            <a href="{{ url_for('startup.detail', startup_id=startup.startup_id) }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Assign Member</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

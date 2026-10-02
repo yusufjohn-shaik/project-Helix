@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">User Profile</h1>
+</div>
+
+<div class="card" style="max-width: 550px;">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--violet)); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: bold; color: white;">
+            {{ (user.name or session.get('name') or 'U')[:1] | upper }}
+        </div>
+        <div>
+            <h2 style="margin: 0; font-size: 1.4rem;">{{ user.name or session.get('name') or 'User' }}</h2>
+            <span style="color: var(--text-muted); font-size: 0.9rem;">@{{ user.username or session.get('username') }}</span>
+        </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
+        <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 0.75rem 0; color: var(--text-muted); width: 35%;">User ID</td>
+            <td style="padding: 0.75rem 0; font-weight: 500;">#{{ user.user_id or session.get('user_id') }}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 0.75rem 0; color: var(--text-muted);">Email</td>
+            <td style="padding: 0.75rem 0; font-weight: 500;">{{ user.email or session.get('email') }}</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 0.75rem 0; color: var(--text-muted);">System Role</td>
+            <td style="padding: 0.75rem 0;"><span class="badge badge-active">{{ (user.role or session.get('role') or 'member') | capitalize }}</span></td>
+        </tr>
+        <tr>
+            <td style="padding: 0.75rem 0; color: var(--text-muted);">Joined On</td>
+            <td style="padding: 0.75rem 0; font-weight: 500;">{{ user.created_at or 'Active' }}</td>
+        </tr>
+    </table>
+
+    <div style="display: flex; gap: 0.75rem;">
+        <a href="{{ url_for('auth.change_password') }}" class="btn btn-secondary">Change Password</a>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary" style="color: #ef4444;">Log Out</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Funding Aggregate Report (DB View)</h1>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Round ID</th>
+                <th>Startup Name</th>
+                <th>Round Type</th>
+                <th>Target Amount ($)</th>
+                <th>Total Invested ($)</th>
+                <th>Investors</th>
+                <th>Round Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in funding_data %}
+            <tr>
+                <td>#{{ f.round_id }}</td>
+                <td><strong>{{ f.startup_name }}</strong></td>
+                <td>{{ f.round_type }}</td>
+                <td>${{ "{:,.2f}".format(f.target_amount) if f.target_amount else '0' }}</td>
+                <td>${{ "{:,.2f}".format(f.total_invested) if f.total_invested else '0' }}</td>
+                <td>{{ f.investor_count }} investors</td>
+                <td><span class="badge badge-active">{{ f.round_status }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No funding report rows.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

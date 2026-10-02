@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title"><i class="fa-solid fa-briefcase" style="color: var(--warning);"></i> Jobs & Talent Overview Report</h1>
+        <p class="page-subtitle">Compiled from database view <code>vw_jobs_overview</code>.</p>
+    </div>
+    <a href="{{ url_for('reports.dashboard') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Reports Hub
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Job ID</th>
+                <th>Startup Name</th>
+                <th>Industry</th>
+                <th>Job Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Posted Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for j in jobs_data %}
+            <tr>
+                <td><span style="color: var(--text-muted); font-weight: 600;">#{{ j.job_id }}</span></td>
+                <td><strong>{{ j.startup_name }}</strong></td>
+                <td><span class="badge" style="background: rgba(99, 102, 241, 0.12); color: #818cf8;">{{ j.startup_industry }}</span></td>
+                <td><strong>{{ j.job_title }}</strong></td>
+                <td><small style="color: var(--text-muted);">{{ j.job_description }}</small></td>
+                <td><span class="badge {% if j.job_status == 'open' %}badge-active{% else %}badge-closed{% endif %}">{{ j.job_status }}</span></td>
+                <td><small style="color: var(--text-muted);">{{ j.posted_date.strftime('%Y-%m-%d') if j.posted_date and j.posted_date.strftime else (j.posted_date or 'Recent') }}</small></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-center" style="padding: 2.5rem; color: var(--text-muted);">No job data available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

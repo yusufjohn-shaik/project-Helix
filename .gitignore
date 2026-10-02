@@ -38,7 +38,6 @@ wheels/
 *.egg
 
 # IDE and System Files
-rollout.py
 .vscode/
 .idea/
 *.swp

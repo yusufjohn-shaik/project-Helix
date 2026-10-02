@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Startup Executive Summary</h1>
+    <div>
+        <a href="{{ url_for('reports.funding') }}" class="btn btn-secondary">Funding Report</a>
+        <a href="{{ url_for('reports.tasks') }}" class="btn btn-secondary">Task Report</a>
+        <a href="{{ url_for('reports.hiring') }}" class="btn btn-secondary">Hiring Report</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <th>Startup Name</th>
+                <th>Industry</th>
+                <th>Founder</th>
+                <th>Team Size</th>
+                <th>Total Funding ($)</th>
+                <th>Open Tasks</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in summaries %}
+            <tr>
+                <td><strong>{{ s.startup_name }}</strong></td>
+                <td>{{ s.industry }}</td>
+                <td>{{ s.founder_name }}</td>
+                <td>{{ s.team_size }} members</td>
+                <td>${{ "{:,.2f}".format(s.total_funding_raised) }}</td>
+                <td>{{ s.open_tasks_count }} tasks</td>
+                <td>
+                    <span class="badge badge-active">
+                        {{ s.startup_status }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">No summary report data.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

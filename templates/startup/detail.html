@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h1 class="page-title" style="margin-bottom: 0.25rem;">{{ startup.name }}</h1>
+        <p class="page-subtitle" style="margin: 0;">
+            <span class="badge badge-active">{{ startup.industry }}</span>
+            <span class="badge {% if startup.status == 'active' %}badge-active{% elif startup.status == 'planning' %}badge-pending{% else %}badge-closed{% endif %}">{{ startup.status }}</span>
+            <span style="color: var(--text-muted); font-size: 0.9rem; margin-left: 0.5rem;">
+                Founded: {{ startup.founded_date.strftime('%Y-%m-%d') if startup.founded_date and startup.founded_date.strftime else (startup.founded_date or 'N/A') }}
+            </span>
+        </p>
+    </div>
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="{{ url_for('team.add_member', startup_id=startup.startup_id) }}" class="btn btn-secondary">
+            <i class="fa-solid fa-user-plus"></i> Add Team Member
+        </a>
+        <a href="{{ url_for('hiring.job_create') }}?startup_id={{ startup.startup_id }}" class="btn btn-secondary">
+            <i class="fa-solid fa-briefcase"></i> Post Job
+        </a>
+        <a href="{{ url_for('tasks.project_create') }}?startup_id={{ startup.startup_id }}" class="btn btn-secondary">
+            <i class="fa-solid fa-diagram-project"></i> Add Project
+        </a>
+        <a href="{{ url_for('funding.round_create') }}?startup_id={{ startup.startup_id }}" class="btn btn-secondary">
+            <i class="fa-solid fa-hand-holding-dollar"></i> Open Round
+        </a>
+        <a href="{{ url_for('startup.edit', startup_id=startup.startup_id) }}" class="btn btn-primary">
+            <i class="fa-solid fa-pen"></i> Edit
+        </a>
+        <form method="POST" action="{{ url_for('startup.delete_startup', startup_id=startup.startup_id) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this startup? All related records in foreign key tables will be cascaded.');">
+            <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete</button>
+        </form>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom: 2rem;">
+    <h3 style="margin-top: 0; font-size: 1.15rem; color: var(--text-main);"><i class="fa-solid fa-circle-info"></i> About Company</h3>
+    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem;">
+        {{ startup.description or 'No corporate description provided.' }}
+    </p>
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--text-muted);">
+        <div><strong>Founder:</strong> {{ startup.founder_name or startup.founder_username }} ({{ startup.founder_email }})</div>
+        <div><strong>Startup ID:</strong> #{{ startup.startup_id }}</div>
+    </div>
+</div>
+
+<!-- Tabs / Sections for Related Entities -->
+<div class="grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 2rem;">
+    <!-- Team Members Table -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-users" style="color: var(--accent);"></i> Team Members ({{ team|length }})</h3>
+            <a href="{{ url_for('team.add_member', startup_id=startup.startup_id) }}" class="btn btn-secondary btn-sm">+ Add</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role in Team</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in team %}
+                    <tr>
+                        <td>
+                            <strong>{{ m.user_name or m.username }}</strong><br>
+                            <small style="color: var(--text-muted);">{{ m.email }}</small>
+                        </td>
+                        <td><span class="badge badge-active">{{ m.role_in_team }}</span></td>
+                        <td>
+                            <form method="POST" action="{{ url_for('team.remove_member', team_id=m.team_id, startup_id=startup.startup_id) }}" onsubmit="return confirm('Remove team member?');">
+                                <button type="submit" class="btn btn-danger btn-sm" style="padding: 0.25rem 0.5rem;"><i class="fa-solid fa-xmark"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-center">No team members assigned yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Active Projects Table -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-diagram-project" style="color: var(--primary);"></i> Projects ({{ projects|length }})</h3>
+            <a href="{{ url_for('tasks.project_create') }}" class="btn btn-secondary btn-sm">+ New</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                        <th>Tasks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in projects %}
+                    <tr>
+                        <td><strong><a href="{{ url_for('tasks.project_detail', project_id=p.project_id) }}">{{ p.name }}</a></strong></td>
+                        <td><span class="badge badge-active">{{ p.status }}</span></td>
+                        <td>{{ p.completed_tasks }}/{{ p.total_tasks }} done</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-center">No projects assigned yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 1fr 1fr;">
+    <!-- Open Jobs Table -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-briefcase" style="color: var(--warning);"></i> Job Postings ({{ jobs|length }})</h3>
+            <a href="{{ url_for('hiring.job_create') }}" class="btn btn-secondary btn-sm">+ Post Job</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in jobs %}
+                    <tr>
+                        <td><strong><a href="{{ url_for('hiring.job_detail', job_id=j.job_id) }}">{{ j.title }}</a></strong></td>
+                        <td><span class="badge {% if j.status == 'open' %}badge-active{% else %}badge-closed{% endif %}">{{ j.status }}</span></td>
+                        <td>
+                            <a href="{{ url_for('hiring.job_detail', job_id=j.job_id) }}" class="btn btn-secondary btn-sm">View</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-center">No jobs posted yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Funding Rounds Table -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.1rem;"><i class="fa-solid fa-hand-holding-dollar" style="color: var(--success);"></i> Funding Rounds ({{ rounds|length }})</h3>
+            <a href="{{ url_for('funding.round_create') }}" class="btn btn-secondary btn-sm">+ Open Round</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Target</th>
+                        <th>Raised</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rounds %}
+                    <tr>
+                        <td><strong><a href="{{ url_for('funding.round_detail', round_id=r.round_id) }}">{{ r.round_type }}</a></strong></td>
+                        <td>${{ "{:,.0f}".format(r.target_amount) }}</td>
+                        <td>${{ "{:,.0f}".format(r.total_raised or 0) }}</td>
+                        <td><span class="badge badge-active">{{ r.status }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center">No funding rounds registered.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
